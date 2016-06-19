@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BuddyTrack</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_open_map">Kortasýn</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="action_download_data">Sækja gögn</string>
+</resources>
