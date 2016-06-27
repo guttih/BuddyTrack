@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="35dp"
+            android:id="@+id/imageViewCompany"
+            android:src="@drawable/ic_company24"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="5dp" />
+
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTextItem1"
+            android:text="Item1"
+            android:layout_below="@+id/linearLayout"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:paddingTop="8dp"
+            android:paddingLeft="5dp"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTextItem2"
+            android:text="@string/item2"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:gravity="left"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="5dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDisel"
+            android:text="tvDisel"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="5dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTextItem3"
+            android:text="Item3"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:gravity="right"
+            android:layout_alignTop="@+id/tvDisel"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="5dp"
+            android:paddingTop="8dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

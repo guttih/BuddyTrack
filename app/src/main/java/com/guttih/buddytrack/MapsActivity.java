@@ -1,5 +1,6 @@
 package com.guttih.buddytrack;
 
+import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -32,14 +33,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
+    private static final int MY_PERMISSIONS_REQUEST_FOR_ACCESS_FINE_AND_COARSE_LOCATION = 20000;
     private GoogleMap mMap;
     private Petrol mPetrol;
-
+    private LocationRequest mLocationRequest;
+    private LatLng mLastLocation;
 
     private GoogleApiClient mGoogleApiClient;
     public static final String TAG = MapsActivity.class.getSimpleName();
-    Marker mMarkerHere;
-    private LocationRequest mLocationRequest;
 
 
     @Override
@@ -97,6 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         AppBuddyTrack buddy = ((AppBuddyTrack) getApplicationContext());
+
         mPetrol = buddy.mPetrol;
 
         String str = mPetrol.list.get(2).name;
@@ -146,37 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 title = title + station.getDiselPrice();
             }
 
-            int iIcon = 0;
-            switch (station.company) {
-                case "Atlantsolía":
-                    iIcon = R.drawable.ic_atlantsolia24;
-                    break;
-                case "Dælan":
-                    iIcon = R.drawable.ic_daelan24;
-                    break;
-                case "N1":
-                    iIcon = R.drawable.ic_n124;
-                    break;
-                case "Olís":
-                    iIcon = R.drawable.ic_olis_24;
-                    break;
-                case "Orkan":
-                    iIcon = R.drawable.ic_orkan24;
-                    break;
-                case "Orkan X":
-                    iIcon = R.drawable.ic_orkanx24;
-                    break;
-                case "ÓB":
-                    iIcon = R.drawable.ic_odyrtbensin24;
-                    break;
-                case "Skeljungur":
-                    iIcon = R.drawable.ic_skeljungur24;
-                    break;
-
-                default:
-                    iIcon = 0;
-            }
-
+            int iIcon = station.getIconID();
             if (iIcon != 0) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(station.getLatitude(), station.getLongtitude()))
@@ -195,8 +167,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // https://developers.google.com/maps/documentation/android-api/marker#make_a_marker_draggable
 
         mMap.addMarker(new MarkerOptions().position(kot).title("Kot í selárdal"));
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(haseyla27));
 
+        if (handleLocationPermission(this)) {
+            mMap.setMyLocationEnabled(true);
+        }
+
+
+
+    }
+
+
+    /* Method : handleLocationPermission
+    *   This method checks if the user has given his permission to the app to use the gps of his device.
+    *   It will ask the user if we can have permission to access his gps if we didin't have it before.
+    *
+    *     Return values:
+    *        true  :  If we already have the user permission to access his gps
+    *        false :  If we do not have his permission.  But the function will ask for that
+    *                 permission and that will trigger the onRequestPermissionsResult function with the
+    *                 requestCode = MY_PERMISSIONS_REQUEST_FOR_ACCESS_FINE_AND_COARSE_LOCATION
+    *
+    */
+    private boolean handleLocationPermission(Activity activity){
+        if (    ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{   android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+                    MY_PERMISSIONS_REQUEST_FOR_ACCESS_FINE_AND_COARSE_LOCATION);
+            return false;  //the calling method should not use methods that need this permission yet;
+        }
+        return true; // the calling method can use methods that need this permission
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case MY_PERMISSIONS_REQUEST_FOR_ACCESS_FINE_AND_COARSE_LOCATION:{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted
+                    mMap.setMyLocationEnabled(true);
+                } else {
+                    // Permission denied
+                    this.finish(); //let's close the dialog
+
+                }
+                return;
+            }
+
+        }
     }
 
     @Override
@@ -229,23 +252,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     void handleNewLocation(Location location){
         //
         if (location != null) {
-            if (mMarkerHere == null) {  //set camaera for the first time
-                Log.d(TAG, location.toString());
-                //https://developers.google.com/maps/documentation/android-api/marker#customize_a_marker
-                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-                mMarkerHere = mMap.addMarker(new MarkerOptions()
-                                                    .position(loc)
-                                                    .title("Hér ertu!")
-                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_here16)));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mMarkerHere.getPosition().latitude, mMarkerHere.getPosition().longitude), 15));
+            Log.d(TAG, location.toString());
+            //https://developers.google.com/maps/documentation/android-api/marker#customize_a_marker
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            if (mLastLocation == null) {  //only zoom for the first time
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 17));
             }
-            else{
-                mMarkerHere.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-            }
+            mLastLocation = loc;
         }
     }
-
-
             @Override
             public void onConnectionSuspended(int i) {
                 Log.i(TAG, "Location services suspended. Please reconnect.");

@@ -4,4 +4,6 @@
     <string name="action_open_map">Kortasýn</string>
     <string name="title_activity_maps">Map</string>
     <string name="action_download_data">Sækja gögn</string>
+    <string name="action_exit">Hætta</string>
+    <string name="item2">Item2</string>
 </resources>

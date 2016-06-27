@@ -85,6 +85,6 @@ public class ApiCall extends AsyncTask<Void, Void, String> {
         Log.i("INFO", response);
         responseView.setText(response);*/
         Log.d("res", response);
-        mListener.callback(response);
+        mListener.ApiCallback(response);
     }
 }

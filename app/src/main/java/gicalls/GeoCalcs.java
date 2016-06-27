@@ -2,6 +2,8 @@ package gicalls;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by GuðjónHólm on 14.6.2016.
  */
@@ -39,6 +41,10 @@ public class GeoCalcs {
     public static double distance(LatLng from, LatLng to){
 
         return distance(from.latitude, from.longitude, to.latitude, to.longitude, 'K');
+    }
+    public static double distance(LatLng from, LatLng to, char unit){
+
+        return distance(from.latitude, from.longitude, to.latitude, to.longitude, unit);
     }
     /*
  * Calculate distance between two points in latitude and longitude taking
@@ -78,10 +84,32 @@ public class GeoCalcs {
         dist = dist * 60 * 1.1515; //Miles
         if (unit == 'K') { // Kilometers
             dist = dist * 1.609344;
+        } else if (unit == 'M') { //Nautical Miles
+            dist = dist * 1609.344;
         } else if (unit == 'N') { //Nautical Miles
             dist = dist * 0.8684;
         }
-        return (dist);
+        return dist;
+    }
+
+    // formats the distance, if distance is less than 1 km the function will return distance in meters.
+    // otherwise the returned string will be in kilomenters.
+    public static String formatDistance(double distanceInMeters){
+        //DecimalFormat df = new DecimalFormat("#.00");
+        String strNum;
+
+        if (distanceInMeters >= 1000) {
+            strNum = String.format("%.1f km.", distanceInMeters / 1000);
+        }
+        else
+            strNum = String.format("%d m.", Math.round(distanceInMeters));
+
+        return strNum;
+    }
+
+    public static String formatKronur(double amount){
+        String str = String.format("%.1f kr.", amount);
+        return str;
     }
 
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::*/

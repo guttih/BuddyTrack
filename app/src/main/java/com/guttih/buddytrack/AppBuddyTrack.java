@@ -11,7 +11,7 @@ import gicalls.CallBackListener;
 /**
  * Created by GuðjónHólm on 19.6.2016.
  */
-public class AppBuddyTrack extends Application implements CallBackListener{
+public class AppBuddyTrack extends Application{
     private String data;
     public Petrol mPetrol;
     public String getData() {return this.data;}
@@ -22,13 +22,6 @@ public class AppBuddyTrack extends Application implements CallBackListener{
         super.onCreate();
 
         setData("starting");
-        ApiCall task = new ApiCall(this, "http://apis.is/petrol");
-        task.execute();
 
-    }
-
-    @Override
-    public void callback(String response) {
-        mPetrol = new Petrol(response);
     }
 }
